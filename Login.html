@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script
+			  src="https://code.jquery.com/jquery-3.4.1.js"
+			  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+			  crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <form>
+    <label>Username:</label><br>
+    <input type="text" id="username"></input><br>
+    <button id="btn">Login</button><br>
+    <label id="errorLabel"></label>
+  </form>
+
+  <script>
+
+  function getPostsByUser(un){
+
+      return new Promise(function(resolve,reject){
+
+        $.get('https://jsonplaceholder.typicode.com/users', function(users){
+
+          users.forEach(function(user){
+
+            if (user.username.trim()==un){
+              resolve(window.open("Homepage.html"));
+            }
+          });
+        });
+      })
+  }
+
+  function err(){
+    console.log("Username does not exist");
+  }
+
+  $(document).ready(()=>{
+    document.getElementById("btn").addEventListener("click",function(ev){
+
+      ev.preventDefault();
+
+      var un=document.getElementById("username").value;
+
+      sessionStorage.setItem('user_name', un);
+
+      getPostsByUser(un).catch(err);
+  })
+  })
+
+
+
+  </script>
+
+</body>
+</html>

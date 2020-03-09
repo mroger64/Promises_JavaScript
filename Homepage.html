@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.4.1.js"
+			  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+			  crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+</head>
+<body>
+<h1 id="title"></h1>
+<h2>POST TITLES</h2>
+<ul id="postList"></ul>
+<h2>ALBUM TITLES</h2>
+<ul id="albumList"></ul>
+
+
+<script>
+
+
+
+function getName(s){
+  return new Promise(function(resolve,reject){
+    var t=$('h1#title');
+
+    $.get('https://jsonplaceholder.typicode.com/users?username='+ s, function(users){
+      users.forEach(function(user){
+        var g=t.text(user.name);
+        t.append(g);
+        var a=user.id;
+        sessionStorage.setItem('userID',a);
+      })
+    })
+  })
+}
+
+function getTitles(ident){
+  return new Promise(function(resolve,reject){
+    var list1=$('ul#postList');
+      $.get('https://jsonplaceholder.typicode.com/posts?userId=' + ident, function(posts){
+
+           posts.forEach(function(postsForId){
+              if(postsForId){
+              var li1=$('<li></li>');
+              li1.text(postsForId.title);
+              list1.append(li1);
+            }
+           })
+      })
+  })
+}
+
+function getAlbums(ident){
+  return new Promise(function(resolve,reject){
+    var list2=$('ul#albumList');
+      $.get('https://jsonplaceholder.typicode.com/albums?userId='+ident, function(albums){
+
+           albums.forEach(function(albumsForId){
+              if(albumsForId){
+              var li2=$('<li></li>');
+              li2.text(albumsForId.title);
+              list2.append(li2);
+            }
+            })
+      })
+  })
+}
+
+function err(){
+  console.log("it didn't work");
+}
+
+$(document).ready(()=>{
+  var s=sessionStorage.getItem("user_name");
+  var ident=sessionStorage.getItem('userID');
+
+getName(s)
+  .then(getTitles(ident))
+  .then(getAlbums(ident))
+  .catch(err);
+
+});
+
+
+</script>
+
+
+</body>
+
+</html>
